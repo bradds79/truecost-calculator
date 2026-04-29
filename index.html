@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>True Monthly Cost Calculator | Sonoma County FTHB | Griffen Bradds</title>
+<meta name="description" content="See what a Sonoma County home really costs each month. Beyond what Zillow shows. Built for first-time home buyers by Griffen Bradds, Realtor.">
+
+<style>
+/* ============================================================
+   CONFIG — Edit these values to update branding
+   ============================================================ */
+:root {
+  --color-primary: #1e3a5f;        /* Navy — matches griffenbradds.com */
+  --color-primary-dark: #142844;
+  --color-accent: #2d6cdf;          /* Brighter blue for accents */
+  --color-success: #10b981;         /* Green for positive numbers */
+  --color-warning: #dc2626;         /* Red for "the gap" */
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-bg: #ffffff;
+  --color-bg-soft: #f9fafb;
+  --color-border: #e5e7eb;
+  --font-display: 'Georgia', 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg-soft);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px 20px 80px; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  text-align: center;
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 32px;
+}
+
+header .brand {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+header h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--color-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+header .subtitle {
+  font-size: 17px;
+  color: var(--color-text-muted);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   CARD
+   ============================================================ */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04);
+  margin-bottom: 24px;
+}
+
+.card h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-primary);
+  margin-bottom: 24px;
+}
+
+/* ============================================================
+   FORM
+   ============================================================ */
+.field {
+  margin-bottom: 20px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+label .helper {
+  font-weight: 400;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin-left: 6px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--color-text);
+  background: white;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  transition: border-color 0.15s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.input-prefix {
+  position: relative;
+}
+
+.input-prefix .prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.input-prefix input { padding-left: 30px; }
+
+.input-suffix {
+  position: relative;
+}
+
+.input-suffix .suffix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.input-suffix input { padding-right: 32px; }
+
+button.primary {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s;
+  font-family: inherit;
+}
+
+button.primary:hover { background: var(--color-primary-dark); }
+button.primary:active { transform: translateY(1px); }
+button.primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+.results-section { display: none; }
+.results-section.visible { display: block; animation: fadeIn 0.4s ease-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.comparison-side {
+  padding: 20px;
+}
+
+.comparison-side.zillow {
+  background: var(--color-bg-soft);
+  border-right: 1.5px solid var(--color-border);
+}
+
+.comparison-side.actual {
+  background: white;
+}
+
+.comparison-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.comparison-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.comparison-detail {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* The gap callout — the big visual moment */
+.gap-callout {
+  background: var(--color-warning);
+  color: white;
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.gap-callout .gap-label {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.gap-callout .gap-value {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.gap-callout .gap-detail {
+  font-size: 16px;
+  opacity: 0.95;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Breakdown table */
+.breakdown {
+  border-top: 1px solid var(--color-border);
+  padding-top: 20px;
+  margin-bottom: 24px;
+}
+
+.breakdown h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 15px;
+}
+
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-row.total {
+  border-top: 2px solid var(--color-primary);
+  border-bottom: none;
+  padding-top: 14px;
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--color-primary);
+}
+
+.breakdown-label { color: var(--color-text); }
+.breakdown-value { font-weight: 600; }
+
+/* ============================================================
+   CTA
+   ============================================================ */
+.cta-section {
+  background: var(--color-primary);
+  color: white;
+  border-radius: 12px;
+  padding: 32px 28px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.cta-section h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.cta-section p {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 24px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 14px 32px;
+  background: white;
+  color: var(--color-primary);
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  transition: transform 0.05s;
+}
+
+.cta-button:hover { background: #f3f4f6; }
+.cta-button:active { transform: translateY(1px); }
+
+/* ============================================================
+   EMAIL GATE
+   ============================================================ */
+.email-gate {
+  text-align: center;
+  padding: 16px 0 8px;
+}
+
+.email-gate .gate-headline {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.email-gate .gate-sub {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 20px;
+}
+
+/* Live helper text under fields */
+.field-hint {
+  display: block;
+  font-size: 13px;
+  color: var(--color-accent);
+  margin-top: 6px;
+  font-weight: 500;
+  min-height: 18px;
+  transition: opacity 0.15s;
+}
+
+.field-hint.muted {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.recalculate {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.recalculate button {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+}
+
+/* ============================================================
+   FOOTER & COMPLIANCE
+   ============================================================ */
+footer {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  text-align: center;
+  padding: 32px 0 0;
+  border-top: 1px solid var(--color-border);
+  margin-top: 32px;
+}
+
+footer .disclaimer {
+  max-width: 600px;
+  margin: 0 auto 16px;
+}
+
+footer .identity {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  header h1 { font-size: 26px; }
+  header .subtitle { font-size: 15px; }
+  .card { padding: 24px 20px; }
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+  .field-row > .field { margin-bottom: 20px; }
+  .comparison { grid-template-columns: 1fr; }
+  .comparison-side.zillow {
+    border-right: none;
+    border-bottom: 1.5px solid var(--color-border);
+  }
+  .comparison-value { font-size: 24px; }
+  .gap-callout .gap-value { font-size: 36px; }
+  .cta-section { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+  <div class="brand">Griffen Bradds · Sonoma County Realtor</div>
+  <h1>True Monthly Cost Calculator</h1>
+  <p class="subtitle">See what a Sonoma County home really costs each month — beyond what Zillow shows you.</p>
+</header>
+
+<!-- INPUT FORM -->
+<div class="card" id="input-card">
+  <h2>Tell us about the home</h2>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="home-price">Home Price</label>
+      <div class="input-prefix">
+        <span class="prefix">$</span>
+        <input type="text" id="home-price" inputmode="numeric" value="650,000">
+      </div>
+      <span class="field-hint" id="home-price-hint"></span>
+    </div>
+    <div class="field">
+      <label for="down-payment">Down Payment <span class="helper">(%)</span></label>
+      <div class="input-suffix">
+        <input type="text" id="down-payment" inputmode="decimal" value="5">
+        <span class="suffix">%</span>
+      </div>
+      <span class="field-hint" id="down-payment-hint"></span>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="interest-rate">Interest Rate <span class="helper">(%)</span></label>
+      <div class="input-suffix">
+        <input type="text" id="interest-rate" inputmode="decimal" value="6.5">
+        <span class="suffix">%</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="loan-term">Loan Term</label>
+      <select id="loan-term">
+        <option value="30">30 years</option>
+        <option value="15">15 years</option>
+        <option value="20">20 years</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="property-tax">Property Tax Rate <span class="helper">(%/yr)</span></label>
+      <div class="input-suffix">
+        <input type="text" id="property-tax" inputmode="decimal" value="1.1">
+        <span class="suffix">%</span>
+      </div>
+      <span class="field-hint" id="property-tax-hint"></span>
+    </div>
+    <div class="field">
+      <label for="hoa">Monthly HOA <span class="helper">(if any)</span></label>
+      <div class="input-prefix">
+        <span class="prefix">$</span>
+        <input type="text" id="hoa" inputmode="numeric" value="0">
+      </div>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="fire-zone">Fire Risk Zone</label>
+      <select id="fire-zone">
+        <option value="low">Low — coastal, lower-risk areas</option>
+        <option value="medium" selected>Medium — typical Sonoma County</option>
+        <option value="high">High — wildland interface, recent burn zones</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="zip">ZIP Code <span class="helper">(optional)</span></label>
+      <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="e.g. 94928">
+    </div>
+  </div>
+
+  <button type="button" class="primary" id="calculate-btn">Calculate True Monthly Cost</button>
+</div>
+
+<!-- EMAIL GATE -->
+<div class="card results-section" id="email-gate-card">
+  <div class="email-gate">
+    <div class="gate-headline">Almost there.</div>
+    <p class="gate-sub">Enter your name and email to see your full results.</p>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="lead-name">First Name</label>
+      <input type="text" id="lead-name" placeholder="Maya">
+    </div>
+    <div class="field">
+      <label for="lead-email">Email</label>
+      <input type="email" id="lead-email" placeholder="you@example.com">
+    </div>
+  </div>
+
+  <button type="button" class="primary" id="reveal-btn">Show My Results</button>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-card">
+  <div class="card">
+    <h2>Your True Monthly Cost</h2>
+
+    <div class="comparison">
+      <div class="comparison-side zillow">
+        <div class="comparison-label">What Zillow Shows You</div>
+        <div class="comparison-value" id="zillow-amount">$0</div>
+        <div class="comparison-detail">Principal + Interest only</div>
+      </div>
+      <div class="comparison-side actual">
+        <div class="comparison-label">What You Actually Pay</div>
+        <div class="comparison-value" id="actual-amount">$0</div>
+        <div class="comparison-detail">Everything included</div>
+      </div>
+    </div>
+
+    <div class="gap-callout">
+      <div class="gap-label">The Gap Zillow Doesn't Show</div>
+      <div class="gap-value" id="gap-amount">$0</div>
+      <div class="gap-detail" id="gap-context">That's how much more you'll pay each month than the basic mortgage calculators suggest.</div>
+    </div>
+
+    <div class="breakdown">
+      <h3>Full Monthly Breakdown</h3>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Principal &amp; Interest</span>
+        <span class="breakdown-value" id="bd-pi">$0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Property Tax</span>
+        <span class="breakdown-value" id="bd-tax">$0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Home Insurance <span style="color:var(--color-text-muted);font-size:13px;" id="bd-ins-zone">(estimate)</span></span>
+        <span class="breakdown-value" id="bd-insurance">$0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">HOA</span>
+        <span class="breakdown-value" id="bd-hoa">$0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Maintenance Reserve <span style="color:var(--color-text-muted);font-size:13px;">(1% rule)</span></span>
+        <span class="breakdown-value" id="bd-maintenance">$0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Utilities Estimate</span>
+        <span class="breakdown-value" id="bd-utilities">$0</span>
+      </div>
+      <div class="breakdown-row total">
+        <span class="breakdown-label">True Monthly Cost</span>
+        <span class="breakdown-value" id="bd-total">$0</span>
+      </div>
+    </div>
+
+    <div class="recalculate">
+      <button type="button" id="recalculate-btn">← Recalculate with different numbers</button>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>This is exactly what we walk through together.</h3>
+    <p>Book a free 30-minute Strategy Call. We'll review your specific Sonoma scenario, the down payment assistance programs you may qualify for, and a buying timeline that fits your situation.</p>
+    <a href="https://api.leadconnectorhq.com/widget/bookings/private-homebuyer-9eac2635-1dd1-4413-a210-b42435fb1d29" target="_blank" rel="noopener" class="cta-button">Book Your Free Strategy Call →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="disclaimer">
+    This calculator is for educational purposes only and does not constitute legal, tax, financial, or lending advice. Results are estimates. Confirm current rates and your individual eligibility with a qualified professional before making decisions. All real estate services are offered in compliance with California Department of Real Estate regulations and federal and state fair housing laws. Equal Housing Opportunity.
+  </div>
+  <div class="identity">
+    Griffen Bradds · Griffen Bradds &amp; Associates LLC · eXp Realty of Northern California · CA DRE #02404587
+  </div>
+</footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — Edit these values to integrate with your systems
+   ============================================================ */
+const CONFIG = {
+  // ----- LEAD CAPTURE / NOTIFICATIONS -----
+
+  // PRIMARY WEBHOOK URL
+  // Currently set up for Web3Forms (free email notifications to Griffen).
+  // When GHL webhook is ready, swap this URL.
+  WEBHOOK_URL: "https://api.web3forms.com/submit",
+
+  // Web3Forms access key — REPLACE WITH YOUR OWN.
+  // Get one in 30 seconds at https://web3forms.com (no signup, just enter your email).
+  // This routes notifications to griffen.bradds@exprealty.com.
+  // (When using GHL webhook later, leave this here — GHL ignores extra fields.)
+  WEB3FORMS_ACCESS_KEY: "ad6a4add-a0e9-4689-a6e8-8bf17471b589",
+
+  // ----- USER EXPERIENCE -----
+
+  // How long (in hours) to remember user's email before re-prompting.
+  // 12 = ask once per half-day session.
+  EMAIL_MEMORY_HOURS: 12,
+
+  // ----- CALCULATOR DEFAULTS -----
+
+  // Insurance ranges by fire zone (annual, midpoint estimate)
+  INSURANCE_LOW: 2000,
+  INSURANCE_MEDIUM: 4000,
+  INSURANCE_HIGH: 7000,
+
+  // Maintenance reserve as % of home value annually
+  MAINTENANCE_RATE: 0.01,
+
+  // Utilities flat estimate per month
+  UTILITIES_MONTHLY: 250
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function parseMoney(value) {
+  if (typeof value !== 'string') value = String(value);
+  const cleaned = value.replace(/[^0-9.]/g, '');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
+}
+
+function formatMoney(value, withCents = false) {
+  const rounded = withCents ? value.toFixed(2) : Math.round(value);
+  return '$' + rounded.toLocaleString('en-US', {
+    minimumFractionDigits: withCents ? 2 : 0,
+    maximumFractionDigits: withCents ? 2 : 0
+  });
+}
+
+function formatNumberInput(input) {
+  // Live-format number inputs with comma separators (only for home price + HOA)
+  const cursorPos = input.selectionStart;
+  const oldLength = input.value.length;
+  const numericValue = input.value.replace(/[^0-9]/g, '');
+  const formatted = numericValue ? parseInt(numericValue, 10).toLocaleString('en-US') : '';
+  input.value = formatted;
+  const newLength = formatted.length;
+  const adjustedCursor = cursorPos + (newLength - oldLength);
+  input.setSelectionRange(adjustedCursor, adjustedCursor);
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let lastCalculation = null;
+
+/* ============================================================
+   CALCULATION
+   ============================================================ */
+function calculate() {
+  const homePrice = parseMoney(document.getElementById('home-price').value);
+  const downPaymentPct = parseFloat(document.getElementById('down-payment').value) || 0;
+  const interestRate = parseFloat(document.getElementById('interest-rate').value) || 0;
+  const loanTerm = parseInt(document.getElementById('loan-term').value, 10);
+  const propertyTaxRate = parseFloat(document.getElementById('property-tax').value) || 0;
+  const hoaMonthly = parseMoney(document.getElementById('hoa').value);
+  const fireZone = document.getElementById('fire-zone').value;
+  const zip = document.getElementById('zip').value.replace(/[^0-9]/g, '');
+
+  // Validate
+  if (homePrice <= 0) {
+    alert('Please enter a home price greater than $0.');
+    return null;
+  }
+
+  // Loan amount
+  const downPaymentAmount = homePrice * (downPaymentPct / 100);
+  const loanAmount = homePrice - downPaymentAmount;
+
+  // Principal & Interest (monthly)
+  const monthlyRate = (interestRate / 100) / 12;
+  const numPayments = loanTerm * 12;
+  let pi = 0;
+  if (monthlyRate > 0) {
+    pi = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+         (Math.pow(1 + monthlyRate, numPayments) - 1);
+  } else {
+    pi = loanAmount / numPayments;
+  }
+
+  // Property tax (monthly)
+  const propertyTax = (homePrice * (propertyTaxRate / 100)) / 12;
+
+  // Insurance (monthly, by zone)
+  let insuranceAnnual;
+  let zoneLabel;
+  if (fireZone === 'low') {
+    insuranceAnnual = CONFIG.INSURANCE_LOW;
+    zoneLabel = 'low-risk zone est.';
+  } else if (fireZone === 'high') {
+    insuranceAnnual = CONFIG.INSURANCE_HIGH;
+    zoneLabel = 'high-risk zone est.';
+  } else {
+    insuranceAnnual = CONFIG.INSURANCE_MEDIUM;
+    zoneLabel = 'typical Sonoma est.';
+  }
+  const insurance = insuranceAnnual / 12;
+
+  // Maintenance reserve
+  const maintenance = (homePrice * CONFIG.MAINTENANCE_RATE) / 12;
+
+  // Utilities
+  const utilities = CONFIG.UTILITIES_MONTHLY;
+
+  // Totals
+  const zillowEstimate = pi; // Basic calculator shows P&I only
+  const trueTotal = pi + propertyTax + insurance + hoaMonthly + maintenance + utilities;
+  const gap = trueTotal - zillowEstimate;
+
+  return {
+    inputs: { homePrice, downPaymentPct, interestRate, loanTerm, propertyTaxRate, hoaMonthly, fireZone, zip },
+    pi, propertyTax, insurance, hoaMonthly, maintenance, utilities,
+    zillowEstimate, trueTotal, gap, zoneLabel
+  };
+}
+
+/* ============================================================
+   DISPLAY
+   ============================================================ */
+function displayResults(r) {
+  document.getElementById('zillow-amount').textContent = formatMoney(r.zillowEstimate) + '/mo';
+  document.getElementById('actual-amount').textContent = formatMoney(r.trueTotal) + '/mo';
+  document.getElementById('gap-amount').textContent = formatMoney(r.gap) + '/mo';
+  document.getElementById('gap-context').textContent =
+    "That's " + formatMoney(r.gap * 12) + ' per year that basic mortgage calculators don\u2019t show.';
+
+  document.getElementById('bd-pi').textContent = formatMoney(r.pi);
+  document.getElementById('bd-tax').textContent = formatMoney(r.propertyTax);
+  document.getElementById('bd-insurance').textContent = formatMoney(r.insurance);
+  document.getElementById('bd-ins-zone').textContent = '(' + r.zoneLabel + ')';
+  document.getElementById('bd-hoa').textContent = formatMoney(r.hoaMonthly);
+  document.getElementById('bd-maintenance').textContent = formatMoney(r.maintenance);
+  document.getElementById('bd-utilities').textContent = formatMoney(r.utilities);
+  document.getElementById('bd-total').textContent = formatMoney(r.trueTotal) + '/mo';
+}
+
+function showResults() {
+  document.getElementById('input-card').style.display = 'none';
+  document.getElementById('email-gate-card').style.display = 'none';
+  document.getElementById('results-card').classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showEmailGate() {
+  document.getElementById('input-card').style.display = 'none';
+  document.getElementById('email-gate-card').classList.add('visible');
+  document.getElementById('lead-email').focus();
+}
+
+function backToInput() {
+  document.getElementById('results-card').classList.remove('visible');
+  document.getElementById('email-gate-card').classList.remove('visible');
+  document.getElementById('email-gate-card').style.display = '';
+  document.getElementById('input-card').style.display = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   12-HOUR EMAIL MEMORY (localStorage)
+   ============================================================ */
+const STORAGE_KEY = 'fthb_calc_lead';
+
+function getRememberedLead() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    const ageHours = (Date.now() - data.timestamp) / (1000 * 60 * 60);
+    if (ageHours > CONFIG.EMAIL_MEMORY_HOURS) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return data;
+  } catch (err) {
+    return null;
+  }
+}
+
+function rememberLead(name, email) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      name: name,
+      email: email,
+      timestamp: Date.now()
+    }));
+  } catch (err) {
+    // localStorage may be disabled — silently fall through
+  }
+}
+
+/* ============================================================
+   WEBHOOK NOTIFICATION (non-blocking, fire-and-forget)
+   ============================================================ */
+function sendWebhookNotification(name, email, calculation, isRepeat) {
+  if (!CONFIG.WEBHOOK_URL || CONFIG.WEBHOOK_URL.length === 0) {
+    console.log('Webhook not configured (no notification sent).');
+    return;
+  }
+
+  // Build a clean, readable summary for email body
+  const inputs = calculation.inputs;
+  const summary = [
+    'Home Price: ' + formatMoney(inputs.homePrice),
+    'Down Payment: ' + inputs.downPaymentPct + '% (' + formatMoney(inputs.homePrice * inputs.downPaymentPct / 100) + ')',
+    'Interest Rate: ' + inputs.interestRate + '%',
+    'Loan Term: ' + inputs.loanTerm + ' years',
+    'Property Tax: ' + inputs.propertyTaxRate + '%',
+    'HOA: ' + formatMoney(inputs.hoaMonthly) + '/mo',
+    'Fire Zone: ' + inputs.fireZone,
+    'ZIP: ' + (inputs.zip || 'not provided'),
+    '',
+    '--- RESULTS ---',
+    'Zillow estimate: ' + formatMoney(calculation.zillowEstimate) + '/mo',
+    'True monthly cost: ' + formatMoney(calculation.trueTotal) + '/mo',
+    'The gap: ' + formatMoney(calculation.gap) + '/mo (' + formatMoney(calculation.gap * 12) + '/yr)'
+  ].join('\n');
+
+  const payload = {
+    // Web3Forms-specific fields (ignored by other webhooks)
+    access_key: CONFIG.WEB3FORMS_ACCESS_KEY,
+    subject: (isRepeat ? '🔄 Repeat scenario — ' : '🧮 NEW calculator submission — ') + (name || email),
+    from_name: 'True Cost Calculator',
+
+    // Standard fields
+    source: 'truecost.griffenbradds.com',
+    timestamp: new Date().toISOString(),
+    is_repeat_scenario: isRepeat,
+    first_name: name,
+    email: email,
+    summary: summary,
+
+    // Structured data (useful for GHL custom fields later)
+    calculator_inputs: inputs,
+    calculator_results: {
+      zillow_estimate_monthly: Math.round(calculation.zillowEstimate),
+      true_total_monthly: Math.round(calculation.trueTotal),
+      gap_monthly: Math.round(calculation.gap),
+      gap_annual: Math.round(calculation.gap * 12)
+    }
+  };
+
+  // Fire and forget — don't block the UI on the network call.
+  // 5-second timeout prevents indefinite hangs.
+  const controller = new AbortController();
+  const timeoutId = setTimeout(function() { controller.abort(); }, 5000);
+
+  fetch(CONFIG.WEBHOOK_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(payload),
+    signal: controller.signal
+  }).then(function(response) {
+    clearTimeout(timeoutId);
+    if (response.ok) {
+      console.log('Calculator submission sent to webhook.');
+    } else {
+      console.warn('Webhook returned status', response.status);
+    }
+  }).catch(function(err) {
+    clearTimeout(timeoutId);
+    console.warn('Webhook error (non-blocking):', err.message);
+  });
+}
+
+/* ============================================================
+   LEAD CAPTURE FLOW
+   ============================================================ */
+function captureLeadAndShowResults() {
+  const name = document.getElementById('lead-name').value.trim();
+  const email = document.getElementById('lead-email').value.trim();
+
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // Remember for 12 hours
+  rememberLead(name, email);
+
+  // Fire webhook in background (non-blocking)
+  sendWebhookNotification(name, email, lastCalculation, false);
+
+  // Show results immediately — don't wait for the webhook
+  showResults();
+}
+
+/* ============================================================
+   EVENT HANDLERS
+   ============================================================ */
+function updateFieldHints() {
+  const homePrice = parseMoney(document.getElementById('home-price').value);
+  const downPaymentPct = parseFloat(document.getElementById('down-payment').value) || 0;
+  const propertyTaxRate = parseFloat(document.getElementById('property-tax').value) || 0;
+
+  const homePriceHint = document.getElementById('home-price-hint');
+  const downPaymentHint = document.getElementById('down-payment-hint');
+  const propertyTaxHint = document.getElementById('property-tax-hint');
+
+  // Home price hint: shows the loan amount (price minus down payment)
+  if (homePrice > 0) {
+    const downPaymentDollars = homePrice * (downPaymentPct / 100);
+    const loanAmount = homePrice - downPaymentDollars;
+    homePriceHint.textContent = 'Loan amount: ' + formatMoney(loanAmount);
+    homePriceHint.classList.add('muted');
+  } else {
+    homePriceHint.textContent = '';
+  }
+
+  // Down payment hint: shows the dollar amount
+  if (homePrice > 0 && downPaymentPct > 0) {
+    const downPaymentDollars = homePrice * (downPaymentPct / 100);
+    downPaymentHint.textContent = '= ' + formatMoney(downPaymentDollars);
+    downPaymentHint.classList.remove('muted');
+  } else {
+    downPaymentHint.textContent = '';
+  }
+
+  // Property tax hint: shows annual dollar amount
+  if (homePrice > 0 && propertyTaxRate > 0) {
+    const annualTax = homePrice * (propertyTaxRate / 100);
+    propertyTaxHint.textContent = '= ' + formatMoney(annualTax) + '/year';
+    propertyTaxHint.classList.add('muted');
+  } else {
+    propertyTaxHint.textContent = '';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Live-format home price and HOA inputs with commas
+  const homePriceInput = document.getElementById('home-price');
+  const hoaInput = document.getElementById('hoa');
+  const downPaymentInput = document.getElementById('down-payment');
+  const propertyTaxInput = document.getElementById('property-tax');
+
+  homePriceInput.addEventListener('input', function() {
+    formatNumberInput(homePriceInput);
+    updateFieldHints();
+  });
+  hoaInput.addEventListener('input', function() { formatNumberInput(hoaInput); });
+  downPaymentInput.addEventListener('input', updateFieldHints);
+  propertyTaxInput.addEventListener('input', updateFieldHints);
+
+  // Initialize hints with the pre-filled defaults
+  updateFieldHints();
+
+  // Calculate button
+  document.getElementById('calculate-btn').addEventListener('click', async function() {
+    const result = calculate();
+    if (!result) return;
+
+    lastCalculation = result;
+    displayResults(result);
+
+    // Check if we already have this user's email from a recent session
+    const remembered = getRememberedLead();
+    if (remembered) {
+      // Skip the email gate — go straight to results.
+      // Send a silent "repeat scenario" notification to Griffen so he sees all scenarios.
+      sendWebhookNotification(remembered.name, remembered.email, result, true);
+      showResults();
+    } else {
+      // First time this session — show the email gate
+      showEmailGate();
+    }
+  });
+
+  // Reveal results after email
+  document.getElementById('reveal-btn').addEventListener('click', captureLeadAndShowResults);
+
+  // Submit on Enter in email field
+  document.getElementById('lead-email').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') captureLeadAndShowResults();
+  });
+
+  // Recalculate
+  document.getElementById('recalculate-btn').addEventListener('click', backToInput);
+});
+</script>
+
+</body>
+</html>
