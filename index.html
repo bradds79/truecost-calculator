@@ -1145,44 +1145,15 @@ function sendWebhookNotification(name, email, calculation, isRepeat) {
   ].join('\n');
 
   const payload = {
-    // Web3Forms-specific fields (ignored by other webhooks)
+    // Web3Forms-specific fields
     access_key: CONFIG.WEB3FORMS_ACCESS_KEY,
     subject: (isRepeat ? '🔄 Repeat scenario — ' : '🧮 NEW calculator submission — ') + (name || email),
     from_name: 'True Cost Calculator',
 
-    // Standard fields
-    source: 'truecost.griffenbradds.com',
-    timestamp: new Date().toISOString(),
-    is_repeat_scenario: isRepeat,
+    // The user-facing fields (clean, minimal — no redundancy, no JSON blobs)
     first_name: name,
     email: email,
-    summary: summary,
-
-    // Flattened input fields (readable in email body)
-    input_home_price: formatMoney(inputs.homePrice),
-    input_down_payment_pct: inputs.downPaymentPct + '%',
-    input_down_payment_dollars: formatMoney(inputs.homePrice * inputs.downPaymentPct / 100),
-    input_interest_rate: inputs.interestRate + '%',
-    input_loan_term: inputs.loanTerm + ' years',
-    input_property_tax_rate: inputs.propertyTaxRate + '%',
-    input_hoa_monthly: formatMoney(inputs.hoaMonthly),
-    input_fire_zone: inputs.fireZone,
-    input_zip: inputs.zip || 'not provided',
-
-    // Flattened result fields (readable in email body)
-    result_zillow_estimate_monthly: formatMoney(calculation.zillowEstimate),
-    result_true_monthly_cost: formatMoney(calculation.trueTotal),
-    result_gap_monthly: formatMoney(calculation.gap),
-    result_gap_annual: formatMoney(calculation.gap * 12),
-
-    // JSON-stringified structured data (useful for GHL custom fields later)
-    calculator_inputs_json: JSON.stringify(inputs),
-    calculator_results_json: JSON.stringify({
-      zillow_estimate_monthly: Math.round(calculation.zillowEstimate),
-      true_total_monthly: Math.round(calculation.trueTotal),
-      gap_monthly: Math.round(calculation.gap),
-      gap_annual: Math.round(calculation.gap * 12)
-    })
+    summary: summary
   };
 
   // Fire and forget — don't block the UI on the network call.
