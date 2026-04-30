@@ -11,16 +11,17 @@
    CONFIG — Edit these values to update branding
    ============================================================ */
 :root {
-  --color-primary: #1e3a5f;        /* Navy — matches griffenbradds.com */
-  --color-primary-dark: #142844;
-  --color-accent: #2d6cdf;          /* Brighter blue for accents */
-  --color-success: #10b981;         /* Green for positive numbers */
-  --color-warning: #dc2626;         /* Red for "the gap" */
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
+  --color-primary: #3b402e;         /* Deep vineyard olive — matches logo backdrop */
+  --color-primary-dark: #272f2c;    /* Deepest vineyard shadow */
+  --color-accent: #5d5533;          /* Olive gold for CTAs/links */
+  --color-cream: #d7d1bd;           /* Logo brand cream — highlights */
+  --color-success: #10b981;         /* Green for positive numbers (semantic, kept) */
+  --color-warning: #dc2626;         /* Red for "the gap" (semantic, kept) */
+  --color-text: #1f2520;            /* Near-black with warm undertone */
+  --color-text-muted: #6a6555;      /* Warm muted gray */
   --color-bg: #ffffff;
-  --color-bg-soft: #f9fafb;
-  --color-border: #e5e7eb;
+  --color-bg-soft: #fcfaf5;         /* Warm-tinted alt background */
+  --color-border: #e8e4d8;          /* Cream-tinted border */
   --font-display: 'Georgia', 'Times New Roman', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -45,9 +46,18 @@ body {
    ============================================================ */
 header {
   text-align: center;
-  padding: 32px 0 24px;
+  padding: 24px 0 24px;
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 32px;
+}
+
+header .logo {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  margin: 0 auto 24px;
+  border-radius: 8px;
 }
 
 header .brand {
@@ -279,6 +289,35 @@ button.primary:disabled { opacity: 0.6; cursor: not-allowed; }
   margin: 0 auto;
 }
 
+/* ============================================================
+   EMAIL SENT CONFIRMATION (v1.1)
+   ============================================================ */
+.email-sent-toast {
+  display: none;
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  color: #065f46;
+  align-items: center;
+  gap: 10px;
+}
+
+.email-sent-toast.visible {
+  display: flex;
+}
+
+.email-sent-toast .toast-icon {
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.email-sent-toast .toast-text {
+  flex-grow: 1;
+}
+
 /* Breakdown table */
 .breakdown {
   border-top: 1px solid var(--color-border);
@@ -316,6 +355,83 @@ button.primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .breakdown-label { color: var(--color-text); }
 .breakdown-value { font-weight: 600; }
+
+/* ============================================================
+   SOURCES / BIBLIOGRAPHY (v1.1)
+   ============================================================ */
+.sources-section {
+  margin: 20px 0 16px;
+  padding: 16px 20px;
+  background: var(--color-bg-soft);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.sources-section summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  padding: 4px 0;
+  user-select: none;
+}
+
+.sources-section summary:hover {
+  color: var(--color-accent);
+}
+
+.sources-section[open] summary {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sources-content {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sources-intro {
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+
+.sources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sources-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.sources-list li:last-child {
+  border-bottom: none;
+}
+
+.sources-list li strong {
+  color: var(--color-primary);
+}
+
+.sources-list a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.sources-list a:hover {
+  color: var(--color-primary-dark);
+}
+
+.sources-disclaimer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
 
 /* ============================================================
    CTA
@@ -357,8 +473,37 @@ button.primary:disabled { opacity: 0.6; cursor: not-allowed; }
   transition: transform 0.05s;
 }
 
-.cta-button:hover { background: #f3f4f6; }
+.cta-button:hover { background: var(--color-bg-soft); }
 .cta-button:active { transform: translateY(1px); }
+
+.cta-button-secondary {
+  display: inline-block;
+  padding: 14px 32px;
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  transition: transform 0.05s, background 0.15s;
+  margin-left: 8px;
+}
+
+.cta-button-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+.cta-button-secondary:active { transform: translateY(1px); }
+
+.cta-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .cta-buttons { flex-direction: column; }
+  .cta-button-secondary { margin-left: 0; }
+}
 
 /* ============================================================
    EMAIL GATE
@@ -460,9 +605,10 @@ footer .identity {
 <div class="container">
 
 <header>
+  <img src="header-logo.png" alt="Griffen Bradds | Wine Country Real Estate | eXp Realty" class="logo">
   <div class="brand">Griffen Bradds · Sonoma County Realtor</div>
   <h1>True Monthly Cost Calculator</h1>
-  <p class="subtitle">See what a Sonoma County home really costs each month — beyond what Zillow shows you.</p>
+  <p class="subtitle">See what a Sonoma County home really costs each month, beyond what Zillow shows you.</p>
 </header>
 
 <!-- INPUT FORM -->
@@ -526,16 +672,17 @@ footer .identity {
 
   <div class="field-row">
     <div class="field">
-      <label for="fire-zone">Fire Risk Zone</label>
-      <select id="fire-zone">
-        <option value="low">Low — coastal, lower-risk areas</option>
-        <option value="medium" selected>Medium — typical Sonoma County</option>
-        <option value="high">High — wildland interface, recent burn zones</option>
-      </select>
+      <label for="zip">ZIP Code <span class="helper">(auto-selects fire zone)</span></label>
+      <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="e.g. 94928">
     </div>
     <div class="field">
-      <label for="zip">ZIP Code <span class="helper">(optional)</span></label>
-      <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="e.g. 94928">
+      <label for="fire-zone">Fire Risk Zone</label>
+      <select id="fire-zone">
+        <option value="low">Low: coastal, lower-risk areas</option>
+        <option value="medium" selected>Medium: typical Sonoma County</option>
+        <option value="high">High: wildland interface, recent burn zones</option>
+      </select>
+      <span class="field-hint" id="fire-zone-hint"></span>
     </div>
   </div>
 
@@ -587,6 +734,11 @@ footer .identity {
       <div class="gap-detail" id="gap-context">That's how much more you'll pay each month than the basic mortgage calculators suggest.</div>
     </div>
 
+    <div class="email-sent-toast" id="email-sent-toast">
+      <span class="toast-icon">✓</span>
+      <span class="toast-text">A copy of your results has been sent to <strong id="email-sent-to">your email</strong>. Check your inbox in a moment.</span>
+    </div>
+
     <div class="breakdown">
       <h3>Full Monthly Breakdown</h3>
       <div class="breakdown-row">
@@ -619,6 +771,22 @@ footer .identity {
       </div>
     </div>
 
+    <!-- Bibliography / Sources (v1.1) -->
+    <details class="sources-section">
+      <summary>How we calculated this (sources and assumptions)</summary>
+      <div class="sources-content">
+        <p class="sources-intro">All numbers above are based on real Sonoma County market data, not generic Zillow defaults. Here's where each component comes from:</p>
+        <ul class="sources-list">
+          <li><strong>Property Tax (1.1% default):</strong> Typical Sonoma County effective rate including Prop 13 base plus voter-approved bonds and special assessments. Source: <a href="https://sonomacounty.ca.gov/administrative-support-and-fiscal-services/auditor-controller-treasurer-tax-collector" target="_blank" rel="noopener">Sonoma County Auditor-Controller-Treasurer-Tax Collector</a>.</li>
+          <li><strong>Home Insurance (by fire zone):</strong> Estimates based on Sonoma County market data and Cal Fire Fire Hazard Severity Zone designations. Low ~$2,000/yr, Medium ~$4,000/yr, High ~$7,000/yr. Source: <a href="https://osfm.fire.ca.gov/what-we-do/community-wildfire-preparedness-and-mitigation/fire-hazard-severity-zones" target="_blank" rel="noopener">Cal Fire FHSZ Maps</a>. Actual quotes vary by property, carrier, roof type, and defensible space.</li>
+          <li><strong>Maintenance Reserve (1% rule):</strong> Widely cited industry guideline for annual home maintenance budgeting. Source: <a href="https://www.investopedia.com/articles/personal-finance/041515/how-much-money-do-you-need-buy-house.asp" target="_blank" rel="noopener">Investopedia</a>. Older Sonoma County homes (most of our housing stock) may need 1.5%.</li>
+          <li><strong>Utilities Estimate ($550/mo):</strong> Realistic Sonoma County household average. Includes PG&amp;E gas/electric ($200-500), water/sewer ($80-200), garbage ($30-60), internet ($60-120). Source: <a href="https://www.pge.com/" target="_blank" rel="noopener">PG&amp;E typical residential bill</a> + EIA regional data.</li>
+          <li><strong>Zillow Comparison:</strong> Based on Zillow's standard payment estimator methodology, which typically excludes maintenance reserves, utilities, and PMI.</li>
+        </ul>
+        <p class="sources-disclaimer"><em>Estimates are educational, not advice. For your specific scenario, consult a CalHFA-experienced lender, a licensed insurance broker, and a qualified tax advisor.</em></p>
+      </div>
+    </details>
+
     <div class="recalculate">
       <button type="button" id="recalculate-btn">← Recalculate with different numbers</button>
     </div>
@@ -628,7 +796,10 @@ footer .identity {
   <div class="cta-section">
     <h3>This is exactly what we walk through together.</h3>
     <p>Book a free 30-minute Strategy Call. We'll review your specific Sonoma scenario, the down payment assistance programs you may qualify for, and a buying timeline that fits your situation.</p>
-    <a href="https://api.leadconnectorhq.com/widget/bookings/private-homebuyer-9eac2635-1dd1-4413-a210-b42435fb1d29" target="_blank" rel="noopener" class="cta-button">Book Your Free Strategy Call →</a>
+    <div class="cta-buttons">
+      <a href="https://api.leadconnectorhq.com/widget/bookings/private-homebuyer-9eac2635-1dd1-4413-a210-b42435fb1d29" target="_blank" rel="noopener" class="cta-button">Book Your Free Strategy Call →</a>
+      <a href="https://griffenbradds.com/search" target="_blank" rel="noopener" class="cta-button-secondary">Search Sonoma County Homes →</a>
+    </div>
   </div>
 </div>
 
@@ -678,8 +849,79 @@ const CONFIG = {
   MAINTENANCE_RATE: 0.01,
 
   // Utilities flat estimate per month
-  UTILITIES_MONTHLY: 250
+  // Updated v1.1: $550 reflects realistic Sonoma County household average
+  // (PG&E electric/gas $200-500, water/sewer $80-200, garbage $30-60, internet $60-120)
+  UTILITIES_MONTHLY: 550
 };
+
+/* ============================================================
+   SONOMA COUNTY ZIP TO FIRE ZONE LOOKUP (v1.1)
+   ============================================================
+   Default fire zone designation for each Sonoma County ZIP code.
+   Based on Cal Fire FHSZ (Fire Hazard Severity Zone) maps.
+
+   IMPORTANT: ZIP-level designations are directional defaults only.
+   Within any given ZIP, individual properties can have different
+   fire zone designations based on parcel-level FHSZ data.
+   Always verify property-specific fire zone before final decisions.
+   ============================================================ */
+const ZIP_FIRE_ZONE_MAP = {
+  // FTHB-attainable submarkets (mostly low to moderate)
+  '94928': 'low',     // Rohnert Park
+  '94931': 'low',     // Cotati
+  '94951': 'medium',  // Penngrove (rural, more risk)
+  '94952': 'low',     // Petaluma west
+  '94953': 'low',     // Petaluma (PO box)
+  '94954': 'medium',  // Petaluma east (some hills)
+  '94975': 'low',     // Petaluma (PO box)
+
+  // Santa Rosa ZIPs (highly variable by neighborhood)
+  '95401': 'low',     // Santa Rosa west/central
+  '95402': 'low',     // Santa Rosa (PO box)
+  '95403': 'high',    // Fountaingrove area (Tubbs Fire 2017)
+  '95404': 'medium',  // Santa Rosa northeast (mixed)
+  '95405': 'medium',  // Santa Rosa east (mixed)
+  '95406': 'low',     // Santa Rosa (PO box)
+  '95407': 'low',     // Santa Rosa southwest
+  '95409': 'high',    // Santa Rosa east / Oakmont area
+
+  // Windsor + nearby
+  '95492': 'medium',  // Windsor
+
+  // Premium markets (covered for completeness)
+  '95436': 'high',    // Forestville (forested)
+  '95442': 'high',    // Glen Ellen
+  '95448': 'medium',  // Healdsburg (mixed terrain)
+  '95452': 'high',    // Kenwood
+  '95472': 'medium',  // Sebastopol (mixed)
+  '95473': 'medium',  // Sebastopol (PO box)
+  '95476': 'medium',  // Sonoma (mixed)
+
+  // Coastal Sonoma (low fire risk, other risks)
+  '94922': 'low',     // Camp Meeker
+  '94923': 'low',     // Bodega Bay
+  '94927': 'low',     // Rohnert Park (PO box)
+  '95421': 'high',    // Cazadero (deep redwoods)
+  '95430': 'low',     // Duncans Mills
+  '95450': 'medium',  // Jenner
+  '95497': 'low',     // The Sea Ranch
+
+  // Russian River corridor
+  '95446': 'high',    // Guerneville (forested)
+  '95462': 'high',    // Monte Rio
+  '95465': 'medium',  // Occidental
+
+  // North county
+  '95425': 'medium',  // Cloverdale
+  '95441': 'medium',  // Geyserville
+  '95444': 'medium',  // Graton
+  '95471': 'medium'   // Rio Nido
+};
+
+function lookupFireZoneByZip(zip) {
+  if (!zip || zip.length !== 5) return null;
+  return ZIP_FIRE_ZONE_MAP[zip] || null;
+}
 
 /* ============================================================
    UTILITIES
@@ -806,10 +1048,21 @@ function displayResults(r) {
   document.getElementById('bd-total').textContent = formatMoney(r.trueTotal) + '/mo';
 }
 
-function showResults() {
+function showResults(emailForToast) {
   document.getElementById('input-card').style.display = 'none';
   document.getElementById('email-gate-card').style.display = 'none';
   document.getElementById('results-card').classList.add('visible');
+
+  // Show email-sent confirmation toast (v1.1)
+  // Web3Forms Pro autoresponder sends the user a copy of their results.
+  const toast = document.getElementById('email-sent-toast');
+  if (emailForToast) {
+    document.getElementById('email-sent-to').textContent = emailForToast;
+    toast.classList.add('visible');
+  } else {
+    toast.classList.remove('visible');
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -884,7 +1137,11 @@ function sendWebhookNotification(name, email, calculation, isRepeat) {
     '--- RESULTS ---',
     'Zillow estimate: ' + formatMoney(calculation.zillowEstimate) + '/mo',
     'True monthly cost: ' + formatMoney(calculation.trueTotal) + '/mo',
-    'The gap: ' + formatMoney(calculation.gap) + '/mo (' + formatMoney(calculation.gap * 12) + '/yr)'
+    'The gap: ' + formatMoney(calculation.gap) + '/mo (' + formatMoney(calculation.gap * 12) + '/yr)',
+    '',
+    '--- NEXT STEPS ---',
+    'Search Sonoma County homes: https://griffenbradds.com/search',
+    'Book Free Strategy Call: https://api.leadconnectorhq.com/widget/bookings/private-homebuyer-9eac2635-1dd1-4413-a210-b42435fb1d29'
   ].join('\n');
 
   const payload = {
@@ -901,14 +1158,31 @@ function sendWebhookNotification(name, email, calculation, isRepeat) {
     email: email,
     summary: summary,
 
-    // Structured data (useful for GHL custom fields later)
-    calculator_inputs: inputs,
-    calculator_results: {
+    // Flattened input fields (readable in email body)
+    input_home_price: formatMoney(inputs.homePrice),
+    input_down_payment_pct: inputs.downPaymentPct + '%',
+    input_down_payment_dollars: formatMoney(inputs.homePrice * inputs.downPaymentPct / 100),
+    input_interest_rate: inputs.interestRate + '%',
+    input_loan_term: inputs.loanTerm + ' years',
+    input_property_tax_rate: inputs.propertyTaxRate + '%',
+    input_hoa_monthly: formatMoney(inputs.hoaMonthly),
+    input_fire_zone: inputs.fireZone,
+    input_zip: inputs.zip || 'not provided',
+
+    // Flattened result fields (readable in email body)
+    result_zillow_estimate_monthly: formatMoney(calculation.zillowEstimate),
+    result_true_monthly_cost: formatMoney(calculation.trueTotal),
+    result_gap_monthly: formatMoney(calculation.gap),
+    result_gap_annual: formatMoney(calculation.gap * 12),
+
+    // JSON-stringified structured data (useful for GHL custom fields later)
+    calculator_inputs_json: JSON.stringify(inputs),
+    calculator_results_json: JSON.stringify({
       zillow_estimate_monthly: Math.round(calculation.zillowEstimate),
       true_total_monthly: Math.round(calculation.trueTotal),
       gap_monthly: Math.round(calculation.gap),
       gap_annual: Math.round(calculation.gap * 12)
-    }
+    })
   };
 
   // Fire and forget — don't block the UI on the network call.
@@ -953,10 +1227,12 @@ function captureLeadAndShowResults() {
   rememberLead(name, email);
 
   // Fire webhook in background (non-blocking)
+  // Web3Forms Pro autoresponder will email the user a copy of their results.
   sendWebhookNotification(name, email, lastCalculation, false);
 
   // Show results immediately — don't wait for the webhook
-  showResults();
+  // Pass email so the confirmation toast displays the destination
+  showResults(email);
 }
 
 /* ============================================================
@@ -1015,6 +1291,36 @@ document.addEventListener('DOMContentLoaded', function() {
   downPaymentInput.addEventListener('input', updateFieldHints);
   propertyTaxInput.addEventListener('input', updateFieldHints);
 
+  // ZIP-driven fire zone auto-selection (v1.1)
+  // When user enters a Sonoma County ZIP, auto-select the fire zone default.
+  // User can still manually override the dropdown after auto-selection.
+  const zipInput = document.getElementById('zip');
+  const fireZoneSelect = document.getElementById('fire-zone');
+  const fireZoneHint = document.getElementById('fire-zone-hint');
+  let fireZoneManuallyChanged = false;
+
+  // Track if user manually changed fire zone (so we don't auto-override)
+  fireZoneSelect.addEventListener('change', function() {
+    fireZoneManuallyChanged = true;
+    fireZoneHint.textContent = '';
+  });
+
+  zipInput.addEventListener('input', function() {
+    const zip = zipInput.value.trim();
+    if (zip.length === 5) {
+      const autoZone = lookupFireZoneByZip(zip);
+      if (autoZone && !fireZoneManuallyChanged) {
+        fireZoneSelect.value = autoZone;
+        const zoneLabel = autoZone.charAt(0).toUpperCase() + autoZone.slice(1);
+        fireZoneHint.textContent = 'Auto-selected ' + zoneLabel + ' for ZIP ' + zip + '. Verify with property-specific data.';
+      } else if (!autoZone && zip.length === 5) {
+        fireZoneHint.textContent = 'ZIP ' + zip + ' not in our Sonoma lookup. Please select fire zone manually.';
+      }
+    } else {
+      fireZoneHint.textContent = '';
+    }
+  });
+
   // Initialize hints with the pre-filled defaults
   updateFieldHints();
 
@@ -1031,8 +1337,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (remembered) {
       // Skip the email gate — go straight to results.
       // Send a silent "repeat scenario" notification to Griffen so he sees all scenarios.
+      // Note: Web3Forms Pro autoresponder fires on every submission, so user gets a fresh
+      //       results email for each scenario they run within the 12-hour window.
       sendWebhookNotification(remembered.name, remembered.email, result, true);
-      showResults();
+      showResults(remembered.email);
     } else {
       // First time this session — show the email gate
       showEmailGate();
